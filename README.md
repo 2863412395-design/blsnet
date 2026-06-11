@@ -33,21 +33,51 @@ blsnet/
 
 ## Quick Start
 
+Create a clean Python environment first:
+
+```bash
+conda create -n blsnet python=3.10 -y
+conda activate blsnet
+```
+
+Install PyTorch according to your CUDA version. For example, with CUDA 11.8:
+
+```bash
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+```
+
+If you only need the CPU version:
+
+```bash
+pip install torch torchvision
+```
+
+Then install the remaining dependencies and register the local package:
+
+```bash
+cd /path/to/blsnet
+pip install -r requirements.txt
+pip install -e .
+```
+
+Run a minimal model construction check:
+
+```bash
+python examples/build_model.py
+```
+
+You can also test the model directly in Python:
+
 ```python
 import torch
 from blsnet import BLSNet
 
 model = BLSNet(input_channels=1, num_classes=1)
 x = torch.randn(2, 1, 224, 224)
-y = model(x)
-print(y.shape)
-```
-
-During training, BLSNet can also return multi-scale boundary predictions:
-
-```python
-model.train()
 seg_logits, boundary_logits = model(x, return_boundary=True)
+
+print(seg_logits.shape)
+print([b.shape for b in boundary_logits])
 ```
 
 ## Notes
@@ -56,3 +86,4 @@ This code is organized for publication and GitHub presentation. It describes
 the model structure clearly, but it is not a full reproduction package. Add
 dataset loaders, training loops, metrics, and pretrained backbones separately
 when an executable experiment pipeline is needed.
+
